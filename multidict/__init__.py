@@ -16,6 +16,7 @@ __version__ = '4.4.0'
 
 
 from ._abc import MultiMapping, MutableMultiMapping
+from .istr import istr, upstr
 
 try:
     if not USE_CYTHON_EXTENSIONS:
@@ -23,11 +24,9 @@ try:
     from ._multidict import (MultiDictProxy,
                              CIMultiDictProxy,
                              MultiDict,
-                             CIMultiDict,
-                             upstr, istr)
+                             CIMultiDict)
 except ImportError:  # pragma: no cover
     from ._multidict_py import (MultiDictProxy,
                                 CIMultiDictProxy,
                                 MultiDict,
-                                CIMultiDict,
-                                upstr, istr)
+                                CIMultiDict)

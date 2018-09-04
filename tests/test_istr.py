@@ -6,9 +6,9 @@ import pytest
 from multidict._compat import USE_CYTHON
 
 if USE_CYTHON:
-    from multidict._multidict import istr
+    from multidict.istr import istr_c
 
-from multidict._multidict_py import istr as _istr  # noqa: E402
+from multidict.istr import istr_py
 
 
 IMPLEMENTATION = getattr(sys, 'implementation')  # to suppress mypy error
@@ -62,27 +62,27 @@ class IStrMixin:
 
 
 class TestPyIStr(IStrMixin):
-    cls = _istr
-
-    @staticmethod
-    def _create_strs():
-        _istr('foobarbaz')
-        istr2 = _istr()
-        _istr(istr2)
-
-    @pytest.mark.skipif(IMPLEMENTATION.name != 'cpython',
-                        reason="PyPy has different GC implementation")
-    def test_leak(self):
-        gc.collect()
-        cnt = len(gc.get_objects())
-        for _ in range(10000):
-            self._create_strs()
-
-        gc.collect()
-        cnt2 = len(gc.get_objects())
-        assert abs(cnt - cnt2) < 10  # on PyPy these numbers are not equal
+    cls = istr_py
 
 
 if USE_CYTHON:
     class TestIStr(IStrMixin):
-        cls = istr
+        cls = istr_c
+
+        @staticmethod
+        def _create_strs():
+            istr_c('foobarbaz')
+            istr2 = istr_c()
+            istr_c(istr2)
+
+        @pytest.mark.skipif(IMPLEMENTATION.name != 'cpython',
+                            reason="PyPy has different GC implementation")
+        def test_leak(self):
+            gc.collect()
+            cnt = len(gc.get_objects())
+            for _ in range(10000):
+                self._create_strs()
+
+            gc.collect()
+            cnt2 = len(gc.get_objects())
+            assert abs(cnt - cnt2) < 10  # on PyPy these numbers are not equal
