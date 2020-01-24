@@ -825,6 +825,12 @@ multidict_update(MultiDictObject *self, PyObject *args, PyObject *kwds)
     Py_RETURN_NONE;
 }
 
+static inline PyObject *
+multidict_merge(MultiDictObject *self, PyObject* args, PyObject *kwds)
+{
+    Py_RETURN_NONE;
+}
+
 PyDoc_STRVAR(multidict_add_doc,
 "Add the key and value, not overwriting any previous value.");
 
@@ -856,6 +862,9 @@ PyDoc_STRVAR(multidict_popitem_doc,
 
 PyDoc_STRVAR(multidict_update_doc,
 "Update the dictionary from *other*, overwriting existing keys.");
+
+PyDoc_STRVAR(multidict_merge_doc,
+"Merge the dictionary from *other*, add only keys which does not exist");
 
 static inline PyObject *
 multidict_class_getitem(PyObject *self, PyObject *arg)
@@ -985,6 +994,12 @@ static PyMethodDef multidict_methods[] = {
         (PyCFunction)multidict_update,
         METH_VARARGS | METH_KEYWORDS,
         multidict_update_doc
+    },
+    {
+        "merge",
+        (PyCFunction)multidict_merge,
+        METH_VARARGS | METH_KEYWORDS,
+        multidict_merge_doc
     },
     {
         "__reduce__",
